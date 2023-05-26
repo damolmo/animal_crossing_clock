@@ -12,7 +12,7 @@ class Days {
 
   static const daysTable = """
     CREATE TABLE IF NOT EXISTS days(
-      days TEXT PRIMARY KEY
+      day TEXT PRIMARY KEY
     );
   """;
 
