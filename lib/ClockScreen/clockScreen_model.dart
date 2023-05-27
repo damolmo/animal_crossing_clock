@@ -32,6 +32,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     await retrieveTimeData();
     await retrieveExistingStations();
     await musicServiceVerify();
+    await checkPlayerStopped();
   }
 
   getWeekDayString(int weekDayIndex) {
@@ -199,9 +200,8 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
       notifyListeners();
       if (seconds > 20) isListeningCurrentTrack = true;
       notifyListeners();
-      if (kDebugMode) {
-        print("$currentDuration/$totalDuration");
-      }
+      print("$currentDuration/$totalDuration");
+
 
       if (currentDuration == totalDuration || currentDuration == fixedDuration || currentDuration == "0:0" && isListeningCurrentTrack ){
         // Start playing again, notify listeners
@@ -213,19 +213,22 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
   }
 
+  enableListeners() async {
+    // Enable some listeners to retrieve some data
+    player.onDurationChanged.listen((Duration d) {
+      formatCompareDurations(d, "full");
+    });
+
+    player.onPositionChanged.listen((Duration d) {
+      formatCompareDurations(d, "current");
+    });
+  }
+
   playBackgroundMusic() async {
     // A method to play music on background all time :)
 
       playCurrentHourSong(); // Play some music
-
-      // Enable some listeners to retrieve some data
-      player.onDurationChanged.listen((Duration d) {
-        formatCompareDurations(d, "full");
-      });
-
-      player.onPositionChanged.listen((Duration d) {
-        formatCompareDurations(d, "current");
-      });
+      enableListeners(); // Check player flow
     }
 
   musicServiceVerify() async {
@@ -243,6 +246,28 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
         }
       }
     );
+  }
+
+  checkPlayerStopped() async {
+    // Sometimes the player may stop working without any suer iteraction
+    // We need a background service preventing this
+
+    CountdownTimer counter = CountdownTimer(Duration(hours: 24), Duration(seconds: 1));
+    var listener = counter.listen(null);
+    int secondsWithoutPlayer = 0;
+
+    listener.onData((data) {
+      if (currentDuration == "0:0") secondsWithoutPlayer++;
+      if (secondsWithoutPlayer >=2){
+        // We need to force a restart of the listeners
+        // Sometimes the count stops working but the sound plays once on this state
+        secondsWithoutPlayer = 0;
+        player.pause();
+        player.resume();
+        notifyListeners();
+        enableListeners();
+      }
+    });
   }
 
 }
