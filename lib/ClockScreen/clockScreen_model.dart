@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:quiver/async.dart';
 import 'package:stacked/stacked.dart';
 import '../exports.dart';
@@ -23,13 +24,14 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   String additionalZeroHour = "";
   bool isMusicPlaying = false;
   bool isListeningCurrentTrack = false;
+  bool retrieveSongData = false;
 
   @override
-  void initialise(){
-    getDeviceTimeStamp(); // Background
-    retrieveTimeData();
-    retrieveExistingStations();
-    musicServiceVerify();
+  void initialise() async {
+    await getDeviceTimeStamp(); // Background
+    await retrieveTimeData();
+    await retrieveExistingStations();
+    await musicServiceVerify();
   }
 
   getWeekDayString(int weekDayIndex) {
@@ -79,8 +81,8 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     if (currentMinutes < 10) additionalZeroMinute = "0";
     notifyListeners();
 
-
     var counter = timer.listen(null);
+
 
     counter.onData((data) {
 
@@ -106,6 +108,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
           notifyListeners();
           if (currentHour < 23){
             currentHour ++;
+            isMusicPlaying = false;
             notifyListeners();
             retrieveTimeData();
             if (currentHour < 10){
@@ -138,6 +141,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
       currentTime = await Times.retrieveTimes(currentHour.toString());
       notifyListeners();
     }
+
   }
 
   retrieveExistingStations() async {
@@ -161,6 +165,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
       currentStation = await Stations.retrieveStations(dayMonthYearStation.station);
       notifyListeners();
     }
+
   }
 
   playCurrentHourSong(){
@@ -192,9 +197,11 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     } else {
       currentDuration = "$minutes:$seconds";
       notifyListeners();
-      if (seconds > 1) isListeningCurrentTrack = true;
+      if (seconds > 20) isListeningCurrentTrack = true;
       notifyListeners();
-      print("$currentDuration/$totalDuration");
+      if (kDebugMode) {
+        print("$currentDuration/$totalDuration");
+      }
 
       if (currentDuration == totalDuration || currentDuration == fixedDuration || currentDuration == "0:0" && isListeningCurrentTrack ){
         // Start playing again, notify listeners
@@ -209,18 +216,17 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   playBackgroundMusic() async {
     // A method to play music on background all time :)
 
-    playCurrentHourSong(); // Play some music
+      playCurrentHourSong(); // Play some music
 
-    // Enable some listeners to retrieve some data
-    player.onDurationChanged.listen((Duration d) {
-      formatCompareDurations(d, "full");
-    });
+      // Enable some listeners to retrieve some data
+      player.onDurationChanged.listen((Duration d) {
+        formatCompareDurations(d, "full");
+      });
 
-    player.onPositionChanged.listen((Duration d) {
-      formatCompareDurations(d, "current");
-    });
-
-  }
+      player.onPositionChanged.listen((Duration d) {
+        formatCompareDurations(d, "current");
+      });
+    }
 
   musicServiceVerify() async {
     // A background method to never stop background music
@@ -230,16 +236,13 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
     listener.onData((data) {
       if(!isMusicPlaying){
-        // Notify a new song is starting the play
-        isListeningCurrentTrack = false;
-        notifyListeners();
-        // Play the song
-        playBackgroundMusic();
         // Notify about the playing state
         isMusicPlaying = true;
         notifyListeners();
+        playBackgroundMusic();
+        }
       }
-    });
+    );
   }
 
 }
