@@ -166,10 +166,17 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
   playCurrentHourSong(){
     // If notified, current player will stop playing a song
-    player.pause();
-    player.stop();
-    player.play(AssetSource(currentTime.sound.replaceAll("assets/", "")));
-    notifyListeners();
+
+    try{
+      player.pause();
+      player.stop();
+      player.play(AssetSource(currentTime.sound.replaceAll("assets/", "")));
+      notifyListeners();
+    } catch (e){
+      // Just in case it fails to pause current music service
+      // Usually the above is the way to do it
+      player.play(AssetSource(currentTime.sound.replaceAll("assets/", "")));
+    }
   }
 
   formatCompareDurations(Duration d, String type) async {
