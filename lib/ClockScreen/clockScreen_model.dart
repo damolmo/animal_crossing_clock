@@ -18,6 +18,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   AudioPlayer player = AudioPlayer();
   String currentDuration = "";
   String totalDuration = "";
+  String additionalZero = "";
 
   @override
   void initialise(){
@@ -85,8 +86,14 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
         if (currentMinutes < 59){
           currentMinutes++;
           notifyListeners();
+          if(currentMinutes <=9){
+            additionalZero = "0";
+          } else {
+            additionalZero = "";
+          }
         } else {
           currentMinutes = 0;
+          additionalZero = "0";
           if (currentHour < 23){
             currentHour ++;
             notifyListeners();
