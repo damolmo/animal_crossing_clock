@@ -22,6 +22,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   String additionalZeroMinute = "";
   String additionalZeroHour = "";
   bool isMusicPlaying = true;
+  bool isListeningCurrentTrack = false;
 
   @override
   void initialise(){
@@ -193,11 +194,13 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     } else {
       currentDuration = "$minutes:$seconds";
       print("$currentDuration/$totalDuration");
+      if (seconds > 1) isListeningCurrentTrack = true;
       notifyListeners();
 
-      if (currentDuration == totalDuration || currentDuration == fixedDuration){
+      if (currentDuration == totalDuration || currentDuration == fixedDuration || currentDuration == "0:0" && isListeningCurrentTrack ){
         // Start playing again, notify listeners
         isMusicPlaying = false;
+        isListeningCurrentTrack = false;
         notifyListeners();
       }
     }
@@ -228,7 +231,12 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
     listener.onData((data) {
       if(!isMusicPlaying){
+        // Notify a new song is starting the play
+        isListeningCurrentTrack = false;
+        notifyListeners();
+        // Play the song
         playCurrentHourSong();
+        // Notify about the playing state
         isMusicPlaying = true;
         notifyListeners();
       }
