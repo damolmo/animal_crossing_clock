@@ -21,12 +21,14 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   String fixedDuration = "";
   String additionalZeroMinute = "";
   String additionalZeroHour = "";
+  bool isMusicPlaying = true;
 
   @override
   void initialise(){
     getDeviceTimeStamp(); // Background
     retrieveTimeData();
     retrieveExistingStations();
+    musicServiceVerify();
   }
 
   getWeekDayString(int weekDayIndex) {
@@ -78,8 +80,6 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
 
     var counter = timer.listen(null);
-    print("$currentHour:$currentMinutes:$currentSeconds");
-
 
     counter.onData((data) {
 
@@ -138,7 +138,6 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
       notifyListeners();
     }
 
-    print(currentTime.sound);
     playBackgroundMusic(); // Background
   }
 
@@ -191,7 +190,8 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
       if (currentDuration == totalDuration || currentDuration == fixedDuration){
         // Start playing again, notify listeners
-        playCurrentHourSong();
+        isMusicPlaying = false;
+        notifyListeners();
       }
     }
 
@@ -211,6 +211,21 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
       formatCompareDurations(d, "current");
     });
 
+  }
+
+  musicServiceVerify() async {
+    // A background method to never stop background music
+
+    CountdownTimer check = CountdownTimer(const Duration(hours: 24), const Duration(seconds: 1));
+    var listener = check.listen(null);
+
+    listener.onData((data) {
+      if(!isMusicPlaying){
+        playCurrentHourSong();
+        isMusicPlaying = true;
+        notifyListeners();
+      }
+    });
   }
 
 }
