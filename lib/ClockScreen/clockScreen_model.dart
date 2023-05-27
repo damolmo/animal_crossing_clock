@@ -18,7 +18,8 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   AudioPlayer player = AudioPlayer();
   String currentDuration = "";
   String totalDuration = "";
-  String additionalZero = "";
+  String additionalZeroMinute = "";
+  String additionalZeroHour = "";
 
   @override
   void initialise(){
@@ -70,6 +71,10 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     currentWeekDay = getWeekDayString(timeStamp.weekday);
     notifyListeners();
 
+    if (currentHour < 10) additionalZeroHour = "0";
+    if (currentMinutes < 10) additionalZeroMinute = "0";
+    notifyListeners();
+
 
     var counter = timer.listen(null);
     print("${currentHour}:${currentMinutes}:${currentSeconds}");
@@ -87,17 +92,27 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
           currentMinutes++;
           notifyListeners();
           if(currentMinutes <=9){
-            additionalZero = "0";
+            additionalZeroMinute = "0";
+            notifyListeners();
           } else {
-            additionalZero = "";
+            additionalZeroMinute = "";
+            notifyListeners();
           }
         } else {
           currentMinutes = 0;
-          additionalZero = "0";
+          additionalZeroMinute = "0";
+          notifyListeners();
           if (currentHour < 23){
             currentHour ++;
             notifyListeners();
             retrieveTimeData();
+            if (currentHour < 10){
+              additionalZeroHour =  "0";
+              notifyListeners();
+            } else {
+              additionalZeroHour = "";
+              notifyListeners();
+            }
           } else {
             currentHour = 0;
             currentDay ++;

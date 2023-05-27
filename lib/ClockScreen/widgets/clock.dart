@@ -38,7 +38,7 @@ class ClockWidget extends StatelessWidget{
             width: width * 0.35,
             height: width > 800 ? height * 0.07 : height * 0.05,
             margin: EdgeInsets.only(top: height * 0.08, bottom: height * 0.01, left: width > 800 ? width * 0.20 :  width * 0.13, right: width * 0.05 ),
-            child: Text("${viewModel.currentHour}:${viewModel.additionalZero}${viewModel.currentMinutes}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 22 : 35),),
+            child: Text("${viewModel.additionalZeroHour}${viewModel.currentHour}:${viewModel.additionalZeroMinute}${viewModel.currentMinutes}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 22 : 35),),
           ),
 
           // Day and Month
