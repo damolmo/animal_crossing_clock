@@ -17,13 +17,12 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   Stations currentStation = Stations(name: "name", path: "path", tree: "tree");
   DayMonthYearStation dayMonthYearStation = DayMonthYearStation(day: "day", month: "month", year: "year", station: "station");
   AudioPlayer player = AudioPlayer();
-  String currentDuration = "";
+  String currentDuration = "0:0";
   String totalDuration = "";
   String fixedDuration = "";
   String additionalZeroMinute = "";
   String additionalZeroHour = "";
   bool isMusicPlaying = false;
-  bool isListeningCurrentTrack = false;
   bool retrieveSongData = false;
 
   @override
@@ -31,7 +30,6 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     await getDeviceTimeStamp(); // Background
     await retrieveTimeData();
     await retrieveExistingStations();
-    await musicServiceVerify();
     await checkPlayerStopped();
   }
 
@@ -198,15 +196,12 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     } else {
       currentDuration = "$minutes:$seconds";
       notifyListeners();
-      if (seconds > 20) isListeningCurrentTrack = true;
-      notifyListeners();
       print("$currentDuration/$totalDuration");
 
 
-      if (currentDuration == totalDuration || currentDuration == fixedDuration || currentDuration == "0:0" && isListeningCurrentTrack ){
+      if (currentDuration == totalDuration || currentDuration == fixedDuration){
         // Start playing again, notify listeners
-        isMusicPlaying = false;
-        isListeningCurrentTrack = false;
+        currentDuration = "0:0";
         notifyListeners();
       }
     }
@@ -231,23 +226,6 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
       enableListeners(); // Check player flow
     }
 
-  musicServiceVerify() async {
-    // A background method to never stop background music
-
-    CountdownTimer check = CountdownTimer(const Duration(hours: 24), const Duration(seconds: 1));
-    var listener = check.listen(null);
-
-    listener.onData((data) {
-      if(!isMusicPlaying){
-        // Notify about the playing state
-        isMusicPlaying = true;
-        notifyListeners();
-        playBackgroundMusic();
-        }
-      }
-    );
-  }
-
   checkPlayerStopped() async {
     // Sometimes the player may stop working without any suer iteraction
     // We need a background service preventing this
@@ -262,10 +240,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
         // We need to force a restart of the listeners
         // Sometimes the count stops working but the sound plays once on this state
         secondsWithoutPlayer = 0;
-        player.pause();
-        player.resume();
-        notifyListeners();
-        enableListeners();
+        playBackgroundMusic();
       }
     });
   }
