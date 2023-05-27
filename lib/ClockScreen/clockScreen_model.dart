@@ -107,9 +107,11 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
           notifyListeners();
           if (currentHour < 23){
             currentHour ++;
-            isMusicPlaying = false;
             notifyListeners();
             retrieveTimeData();
+            player.pause();
+            player.stop();
+            playBackgroundMusic();
             if (currentHour < 10){
               additionalZeroHour =  "0";
               notifyListeners();
