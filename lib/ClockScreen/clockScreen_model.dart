@@ -18,6 +18,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   AudioPlayer player = AudioPlayer();
   String currentDuration = "";
   String totalDuration = "";
+  String fixedDuration = "";
   String additionalZeroMinute = "";
   String additionalZeroHour = "";
 
@@ -77,7 +78,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
 
     var counter = timer.listen(null);
-    print("${currentHour}:${currentMinutes}:${currentSeconds}");
+    print("$currentHour:$currentMinutes:$currentSeconds");
 
 
     counter.onData((data) {
@@ -180,14 +181,15 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
     if (type == "full"){
       // This will called once on every start
-      totalDuration = "$minutes:${seconds - 1}"; // To avoid a very well known bug
+      totalDuration = "$minutes:$seconds"; // To avoid a very well known bug
+      fixedDuration = "$minutes:${seconds - 1}";
       notifyListeners();
     } else {
       currentDuration = "$minutes:$seconds";
       print("$currentDuration/$totalDuration");
       notifyListeners();
 
-      if (currentDuration == totalDuration){
+      if (currentDuration == totalDuration || currentDuration == fixedDuration){
         // Start playing again, notify listeners
         playCurrentHourSong();
       }

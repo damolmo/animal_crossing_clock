@@ -37,7 +37,7 @@ class ClockWidget extends StatelessWidget{
           Container(
             width: width * 0.35,
             height: width > 800 ? height * 0.07 : height * 0.05,
-            margin: EdgeInsets.only(top: height * 0.08, bottom: height * 0.01, left: width > 800 ? width * 0.20 :  width * 0.13, right: width * 0.05 ),
+            margin: EdgeInsets.only(top: height * 0.08, bottom: height * 0.01, left: width > 800 ? width * 0.218 :  width * 0.13, right: width * 0.05 ),
             child: Text("${viewModel.additionalZeroHour}${viewModel.currentHour}:${viewModel.additionalZeroMinute}${viewModel.currentMinutes}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 22 : 35),),
           ),
 
@@ -45,7 +45,7 @@ class ClockWidget extends StatelessWidget{
           Container(
             width: width * 0.2,
             height: height * 0.05,
-            margin: EdgeInsets.only(top: width > 800 ? height * 0.015 : height * 0.017, bottom: height * 0.01, left: width > 800 ? width * 0.21 : width * 0.059, right: width * 0.15 ),
+            margin: EdgeInsets.only(top: width > 800 ? height * 0.015 : height * 0.017, bottom: height * 0.01, left: width > 800 ? width * 0.195 : width * 0.059, right: width * 0.15 ),
             child: viewModel.currentMonth < 10 ?
               Text("${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 18 : 30),) :
               Text("${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 15 : 25),),
