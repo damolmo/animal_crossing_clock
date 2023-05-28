@@ -125,6 +125,10 @@ class DayMonthYearStationData {
         "30" : {
           "station" :  "Spring"
         },
+
+        "31" : {
+          "station" :  "Spring"
+        },
       },
 
       "6" : {

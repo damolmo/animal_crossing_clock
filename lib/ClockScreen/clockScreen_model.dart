@@ -123,6 +123,10 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
             currentHour = 0;
             currentDay ++;
             notifyListeners();
+            retrieveTimeData();
+            player.pause();
+            player.stop();
+            playBackgroundMusic();
           }
         }
       }
