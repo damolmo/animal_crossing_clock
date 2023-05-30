@@ -38,7 +38,6 @@ class NpcsTable extends StatelessWidget{
                 image: DecorationImage(
                   image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("aldeano")].picture),
                     fit: BoxFit.fitWidth
-
                 )
               ),
             ),
@@ -56,7 +55,6 @@ class NpcsTable extends StatelessWidget{
                   image: DecorationImage(
                       image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("totakeke")].picture),
                       fit: BoxFit.fitWidth
-
                   )
               ),
             ),
@@ -74,7 +72,6 @@ class NpcsTable extends StatelessWidget{
                   image: DecorationImage(
                       image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("canela")].picture),
                       fit: BoxFit.fitWidth
-
                   )
               ),
             ),
