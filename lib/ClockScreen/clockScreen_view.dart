@@ -36,6 +36,9 @@ class ClockScreenView extends StackedView<ClockScreenModel> {
 
           // Unlocked Characters
           NpcsTable(viewModel: viewModel),
+
+          // Volume button for web
+          WebVolumeButton(viewModel: viewModel),
         ]
       )
     );
