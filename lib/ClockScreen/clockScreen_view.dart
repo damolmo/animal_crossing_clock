@@ -1,4 +1,5 @@
 import 'package:animal_crossing_clock/ClockScreen/widgets/backgroundTheme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
 import '../exports.dart';
@@ -38,6 +39,7 @@ class ClockScreenView extends StackedView<ClockScreenModel> {
           NpcsTable(viewModel: viewModel),
 
           // Volume button for web
+          if (kIsWeb)
           WebVolumeButton(viewModel: viewModel),
         ]
       )
