@@ -30,6 +30,12 @@ class ClockScreenView extends StackedView<ClockScreenModel> {
           // Clock
           ClockWidget(viewModel: viewModel),
 
+          // Balloon
+          if (viewModel.launchingBalloon)
+            BalloonWidget(viewModel: viewModel),
+
+          // Unlocked Characters
+          NpcsTable(viewModel: viewModel),
         ]
       )
     );
