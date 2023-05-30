@@ -16,16 +16,7 @@ class BalloonWidget extends StatelessWidget{
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return InkWell(
-      onTap : (){
-        // Break the balloon
-        viewModel.launchingBalloon = false;
-        viewModel.balloonPlayer.pause();
-        viewModel.balloonPlayer.stop();
-        viewModel.notifyListeners();
-        viewModel.addNpcToAchieved();
-      },
-      child : Container(
+    return Container(
         width: width * 0.2,
         height: height * 0.2,
         margin: EdgeInsets.only(
@@ -34,12 +25,16 @@ class BalloonWidget extends StatelessWidget{
           left: width * viewModel.marginLeft,
           right: width * viewModel.marginRight
         ),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(viewModel.currentBalloon.asset),
-            fit: BoxFit.fitHeight
-          )
-        ),
+      child: InkWell(
+        onTap : (){
+          // Break the balloon
+          viewModel.launchingBalloon = false;
+          viewModel.balloonPlayer.pause();
+          viewModel.balloonPlayer.stop();
+          viewModel.notifyListeners();
+          viewModel.addNpcToAchieved();
+        },
+        child : Image.asset(viewModel.currentBalloon.asset, fit: BoxFit.fitHeight,)
       ),
     );
   }
