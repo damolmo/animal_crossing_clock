@@ -44,7 +44,7 @@ class ClockScreenView extends StackedView<ClockScreenModel> {
           WebVolumeButton(viewModel: viewModel),
 
           // Device Warning
-          if (MediaQuery.of(context).size.width > 800 )
+          if (MediaQuery.of(context).size.width > 500 )
           DeviceWarning(viewModel: viewModel),
         ]
       )
