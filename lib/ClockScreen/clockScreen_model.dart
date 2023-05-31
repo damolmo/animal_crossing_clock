@@ -24,6 +24,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   String totalDuration = "";
   String fixedDuration = "";
   String additionalZeroMinute = "";
+  String additionalZeroDay = "";
   String additionalZeroHour = "";
   bool isMusicPlaying = false;
   bool retrieveSongData = false;
@@ -97,6 +98,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
     if (currentHour < 10) additionalZeroHour = "0";
     if (currentMinutes < 10) additionalZeroMinute = "0";
+    if(currentDay < 10) additionalZeroDay = "0";
     notifyListeners();
 
     var counter = timer.listen(null);

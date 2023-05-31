@@ -47,8 +47,8 @@ class ClockWidget extends StatelessWidget{
             height: height * 0.05,
             margin: EdgeInsets.only(top: width > 800 ? height * 0.015 : height * 0.017, bottom: height * 0.01, left: width > 800 ? width * 0.195 : width * 0.059, right: width * 0.15 ),
             child: viewModel.currentMonth < 10 ?
-              Text("${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 18 : 30),) :
-              Text("${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 15 : 25),),
+              Text("${viewModel.additionalZeroDay}${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 18 : 30),) :
+              Text("${viewModel.additionalZeroDay}${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 15 : 25),),
           ),
 
           // Week Day
