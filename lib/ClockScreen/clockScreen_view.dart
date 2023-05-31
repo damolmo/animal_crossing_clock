@@ -1,4 +1,5 @@
 import 'package:animal_crossing_clock/ClockScreen/widgets/backgroundTheme.dart';
+import 'package:animal_crossing_clock/ClockScreen/widgets/deviceWarning.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,10 @@ class ClockScreenView extends StackedView<ClockScreenModel> {
           // Volume button for web
           if (kIsWeb)
           WebVolumeButton(viewModel: viewModel),
+
+          // Device Warning
+          if (MediaQuery.of(context).size.width > 800 )
+          DeviceWarning(viewModel: viewModel),
         ]
       )
     );
