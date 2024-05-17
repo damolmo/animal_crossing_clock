@@ -52,6 +52,9 @@ class ClockScreenView extends StackedView<ClockScreenModel> implements TickerPro
               if (viewModel.isTotakaPlaying)
                 CurrentSongDialog(viewModel: viewModel),
 
+              // Web Audio
+              WebVolumeButton(viewModel: viewModel),
+
               // Device Warning
               if (MediaQuery.of(context).size.width > 580 )
               DeviceWarning(viewModel: viewModel),

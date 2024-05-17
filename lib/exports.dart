@@ -9,6 +9,7 @@ export 'ClockScreen/widgets/balloonWidget.dart';
 export 'ClockScreen/widgets/npcsTable.dart';
 export 'ClockScreen/widgets/totakaSongsList.dart';
 export 'ClockScreen/widgets/currentSongDialog.dart';
+export 'ClockScreen/widgets/webVolumeButton.dart';
 export 'Databases/stations.dart';
 export 'Databases/totaSongs.dart';
 export 'Databases/times.dart';

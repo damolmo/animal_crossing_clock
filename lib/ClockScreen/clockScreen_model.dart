@@ -67,6 +67,9 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     await waitingBalloonLaunch();
     await getTotakaSongs();
     await playBackProtection();
+
+    kIsWeb? isMusicPlaying = false : isMusicPlaying = true;
+    notifyListeners();
   }
 
   getTotakaSongs() async {
@@ -392,6 +395,26 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
       BalloonsData.insertNpcData();
       currentBalloon = await Balloons.retrieveCurrentNpcBalloon(balloonName);
       notifyListeners();
+    }
+  }
+
+  void resumeMusic() async {
+    // Web browser needs manual initialization of music player
+    if (isTotakaPlaying){
+      totakaPlayer.stop();
+      totakaPlayer.release();
+      isTotakaPlaying = false;
+      isMusicPlaying = false;
+      notifyListeners();
+    } else if (isMusicPlaying) {
+      player.stop();
+      player.release();
+      isMusicPlaying = false;
+      notifyListeners();
+    } else {
+      isMusicPlaying = true;
+      notifyListeners();
+      playBackgroundMusic();
     }
   }
 
