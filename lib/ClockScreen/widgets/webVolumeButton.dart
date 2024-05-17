@@ -14,16 +14,14 @@ class WebVolumeButton extends StatelessWidget{
   Widget build(BuildContext context){
     return IconButton(
       onPressed : (){
-        if (viewModel.isMusicPlaying){
+        try {
           viewModel.player.pause();
-          viewModel.player.stop();
-          viewModel.isMusicPlaying = false;
-          viewModel.notifyListeners();
-        } else {
+          viewModel.player.release();
           viewModel.playBackgroundMusic();
-          viewModel.isMusicPlaying = true;
-          viewModel.notifyListeners();
+        } catch (e){
+          viewModel.playBackgroundMusic();
         }
+
       },
       icon: Icon(!viewModel.isMusicPlaying ? Icons.volume_off_rounded :  Icons.volume_up_rounded, color: Colors.white, size: 25, ),
 
