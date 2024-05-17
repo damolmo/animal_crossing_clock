@@ -6,7 +6,6 @@ export 'ClockScreen/widgets/tree.dart';
 export 'ClockScreen/widgets/clock.dart';
 export 'ClockScreen/widgets/balloonWidget.dart';
 export 'ClockScreen/widgets/npcsTable.dart';
-export 'ClockScreen/widgets/webVolumeButton.dart';
 export 'Databases/stations.dart';
 export 'Databases/times.dart';
 export 'Databases/months.dart';

@@ -54,8 +54,8 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
     await getDeviceTimeStamp(); // Background
     await retrieveTimeData();
     await retrieveExistingStations();
-    await playBackgroundMusic();
-    await enableListeners();
+    playBackgroundMusic();
+    enableListeners();
     await waitingBalloonLaunch();
   }
 
@@ -214,16 +214,14 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
     if (type == "full"){
       // This will called once on every start
       totalDuration = "$minutes:$seconds"; // To avoid a very well known bug
-      fixedDuration = "$minutes:${seconds - 1}";
       notifyListeners();
     } else {
       currentDuration = "$minutes:$seconds";
       notifyListeners();
 
 
-      if (currentDuration == totalDuration || currentDuration == fixedDuration){
+      if (currentDuration == totalDuration){
         // Start playing again, notify listeners
-        currentDuration = "0:0";
         player.stop();
         player.release();
         playBackgroundMusic();

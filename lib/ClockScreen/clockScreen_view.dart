@@ -42,10 +42,6 @@ class ClockScreenView extends StackedView<ClockScreenModel> implements TickerPro
           // Unlocked Characters
           NpcsTable(viewModel: viewModel),
 
-          // Volume button for web
-          if (kIsWeb)
-          WebVolumeButton(viewModel: viewModel),
-
           // Device Warning
           if (MediaQuery.of(context).size.width > 580 )
           DeviceWarning(viewModel: viewModel),
