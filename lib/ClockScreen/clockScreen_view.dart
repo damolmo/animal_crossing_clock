@@ -1,13 +1,16 @@
 import 'package:animal_crossing_clock/ClockScreen/widgets/backgroundTheme.dart';
 import 'package:animal_crossing_clock/ClockScreen/widgets/deviceWarning.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
 import '../exports.dart';
 
-class ClockScreenView extends StackedView<ClockScreenModel> {
+class ClockScreenView extends StackedView<ClockScreenModel> implements TickerProvider {
   @override
-  const ClockScreenView({super.key});
+  ClockScreenView({super.key});
+
+
 
   @override
   Widget builder(
@@ -44,7 +47,7 @@ class ClockScreenView extends StackedView<ClockScreenModel> {
           WebVolumeButton(viewModel: viewModel),
 
           // Device Warning
-          if (MediaQuery.of(context).size.width > 500 )
+          if (MediaQuery.of(context).size.width > 580 )
           DeviceWarning(viewModel: viewModel),
         ]
       )
@@ -53,4 +56,10 @@ class ClockScreenView extends StackedView<ClockScreenModel> {
 
   @override
   ClockScreenModel viewModelBuilder(BuildContext context) => ClockScreenModel();
+
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    // TODO: implement createTicker
+    throw UnimplementedError();
+  }
 }

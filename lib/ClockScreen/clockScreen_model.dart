@@ -1,12 +1,15 @@
 import 'dart:math';
 import 'package:animal_crossing_clock/Data/npcsData.dart';
+import 'package:flutter/animation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:quiver/async.dart';
 import 'package:stacked/stacked.dart';
 import '../exports.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-class ClockScreenModel extends BaseViewModel implements Initialisable{
+class ClockScreenModel extends BaseViewModel implements Initialisable, TickerProvider{
 
   int currentSeconds = 0;
   int currentMinutes = 0;
@@ -44,12 +47,15 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   bool isCanela = false;
   bool isTendoNendo = false;
 
+  // Values used for disc rotation
+
   @override
   void initialise() async {
     await getDeviceTimeStamp(); // Background
     await retrieveTimeData();
     await retrieveExistingStations();
-    await checkPlayerStopped();
+    await playBackgroundMusic();
+    await enableListeners();
     await waitingBalloonLaunch();
   }
 
@@ -213,14 +219,14 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     } else {
       currentDuration = "$minutes:$seconds";
       notifyListeners();
-      print("$currentDuration/$totalDuration");
 
 
       if (currentDuration == totalDuration || currentDuration == fixedDuration){
         // Start playing again, notify listeners
         currentDuration = "0:0";
-        player.pause();
         player.stop();
+        player.release();
+        playBackgroundMusic();
         notifyListeners();
       }
     }
@@ -241,27 +247,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   playBackgroundMusic() async {
     // A method to play music on background all time :)
       playCurrentHourSong(); // Play some music
-      enableListeners(); // Check player flow
     }
-
-  checkPlayerStopped() async {
-    // Sometimes the player may stop working without any suer iteraction
-    // We need a background service preventing this
-
-    CountdownTimer counter = CountdownTimer(Duration(hours: 24), Duration(seconds: 1));
-    var listener = counter.listen(null);
-    int secondsWithoutPlayer = 0;
-
-    listener.onData((data) {
-      if (currentDuration == "0:0") secondsWithoutPlayer++;
-      if (secondsWithoutPlayer >=2){
-        // We need to force a restart of the listeners
-        // Sometimes the count stops working but the sound plays once on this state
-        secondsWithoutPlayer = 0;
-        playBackgroundMusic();
-      }
-    });
-  }
 
   retrieveExistingNpcs() async {
     // A method to retrieve or insert and retrieve existing npcs
@@ -390,6 +376,12 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     npcName.add(currentBalloon.npcID);
     npcIndexes.add(balloonIndex);
     notifyListeners();
+  }
+
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    // TODO: implement createTicker
+    throw UnimplementedError();
   }
 
 }
