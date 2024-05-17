@@ -71,7 +71,7 @@ class BackgroundThemeState extends State<BackgroundTheme> with TickerProviderSta
           height: double.maxFinite,
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(viewModel.currentTime.sky),
+                image: AssetImage(viewModel.isTotakaPlaying ? "assets/sky/totakeke.jpeg" : viewModel.currentTime.sky),
                 fit: BoxFit.fitWidth
             ),
           ), duration: const Duration(seconds: 0),

@@ -9,7 +9,7 @@ import 'package:stacked/stacked.dart';
 import '../exports.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-class ClockScreenModel extends BaseViewModel implements Initialisable, TickerProvider{
+class ClockScreenModel extends BaseViewModel implements Initialisable{
 
   int currentSeconds = 0;
   int currentMinutes = 0;
@@ -23,6 +23,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
   DayMonthYearStation dayMonthYearStation = DayMonthYearStation(day: "day", month: "month", year: "year", station: "station");
   AudioPlayer player = AudioPlayer();
   AudioPlayer balloonPlayer = AudioPlayer();
+  AudioPlayer totakaPlayer = AudioPlayer();
   String currentDuration = "0:0";
   String totalDuration = "";
   String fixedDuration = "";
@@ -37,6 +38,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
   double marginRight = 0.0;
   List<int> npcIndexes = [];
   List<String> npcName = [];
+  List<TotaSongs> songs = [];
   int balloonCounter = 0;
   List<String> npcsString = [];
   List<Npcs> npcs = [];
@@ -46,17 +48,91 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
   bool isTota = false;
   bool isCanela = false;
   bool isTendoNendo = false;
+  bool isTotakaMenu = false;
+  bool isTotakaPlaying = false;
+  int choosedSongIndex = 999;
+  int positionCounter = 0;
+  String savedPosition =  "";
 
   // Values used for disc rotation
 
   @override
-  void initialise() async {
+  void initialise() async  {
     await getDeviceTimeStamp(); // Background
     await retrieveTimeData();
     await retrieveExistingStations();
-    playBackgroundMusic();
-    enableListeners();
+    await playBackgroundMusic();
+    await enableListeners();
+    await enableTotakaListeners();
     await waitingBalloonLaunch();
+    await getTotakaSongs();
+    await playBackProtection();
+  }
+
+  getTotakaSongs() async {
+    // A method that retrieves and inserts totaka songs into database
+    try{
+      songs = await TotaSongs.retrieveCurrentSongs();
+      notifyListeners();
+    } catch (e){
+      SongsData.insertSongsIntoTable();
+      songs = await TotaSongs.retrieveCurrentSongs();
+      notifyListeners();
+    }
+  }
+
+  pauseResumeMainPlayer() async {
+    if (isTotakaPlaying){
+      // Since the player is awaiting for data
+      // Leaving it listening on the background can lead to an application free
+      // Release this player
+      player.stop();
+      player.release();
+    } else {
+      playBackgroundMusic();
+    }
+  }
+
+  playBackProtection() async {
+    // A method that ensures playback is always present
+    CountdownTimer timer = CountdownTimer(const Duration(hours: 24), const Duration(seconds: 1));
+    var listener = timer.listen(null);
+
+    listener.onData((data){
+        if (currentDuration == totalDuration ) {
+          positionCounter += 1;
+          notifyListeners();
+        }
+
+          if(positionCounter >= 5){
+          // No duration change in 5 seconds
+          // Refresh
+          player.stop();
+          player.release();
+          playBackgroundMusic();
+          positionCounter = 0;
+          notifyListeners();
+        }
+
+    });
+
+
+  }
+
+  playChoosedTotakaSong(bool isGonnaPlay) async {
+    // A split method to play/pause totaka songs based on a different index
+    if (isGonnaPlay){
+      pauseResumeMainPlayer();
+      totakaPlayer.play(UrlSource(songs[choosedSongIndex].songPath, mimeType: "mp3" ));
+    } else {
+      totakaPlayer.stop();
+      totakaPlayer.release();
+
+      // Notify to main player to continue with current songs
+      isTotakaPlaying = false;
+      notifyListeners();
+      pauseResumeMainPlayer();
+    }
   }
 
   getWeekDayString(int weekDayIndex) {
@@ -138,7 +214,9 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
             retrieveTimeData();
             player.pause();
             player.stop();
-            playBackgroundMusic();
+            if (!isTotakaPlaying){
+              playBackgroundMusic();
+            }
             if (currentHour < 10){
               additionalZeroHour =  "0";
               notifyListeners();
@@ -151,9 +229,12 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
             currentDay ++;
             notifyListeners();
             retrieveTimeData();
-            player.pause();
-            player.stop();
-            playBackgroundMusic();
+            if (!isTotakaPlaying){
+              player.pause();
+              player.stop();
+              playBackgroundMusic();
+            }
+
           }
         }
       }
@@ -163,7 +244,6 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
   retrieveTimeData() async {
     // A method to retrieve existing times data from database
     // If not data found, insert existing data in app
-
     try {
       currentTime =  await Times.retrieveTimes(currentHour.toString());
       notifyListeners();
@@ -203,13 +283,14 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
   playCurrentHourSong(){
     // If notified, current player will stop playing a song
       player.play(AssetSource(currentTime.sound.replaceAll("assets/", "")));
+      notifyListeners();
   }
 
   formatCompareDurations(Duration d, String type) async {
     // A method that receives a duration and listener type
 
-    int minutes = Duration(minutes: d.inMinutes).inMinutes;
-    int seconds = Duration(seconds: d.inSeconds).inSeconds;
+    int minutes = d.inMinutes;
+    int seconds = d.inSeconds;
 
     if (type == "full"){
       // This will called once on every start
@@ -219,20 +300,41 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
       currentDuration = "$minutes:$seconds";
       notifyListeners();
 
-
       if (currentDuration == totalDuration){
         // Start playing again, notify listeners
-        player.stop();
-        player.release();
-        playBackgroundMusic();
-        notifyListeners();
+        resumeCurrentSong();
       }
     }
 
   }
 
+  playNextTotaSong(){
+    if (songs.length - 1 > choosedSongIndex){
+      choosedSongIndex+=1;
+      notifyListeners();
+      playChoosedTotakaSong(true);
+    } else {
+      choosedSongIndex = 0;
+      notifyListeners();
+      playChoosedTotakaSong(true);
+    }
+  }
+
+  enableTotakaListeners() async {
+    // Enable some listeners to retrieve some data
+
+    totakaPlayer.onDurationChanged.listen((Duration d) {
+      formatCompareDurations(d, "full");
+    });
+
+    totakaPlayer.onPositionChanged.listen((Duration d) {
+      formatCompareDurations(d, "current");
+    });
+  }
+
   enableListeners() async {
     // Enable some listeners to retrieve some data
+
     player.onDurationChanged.listen((Duration d) {
       formatCompareDurations(d, "full");
     });
@@ -240,6 +342,19 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
     player.onPositionChanged.listen((Duration d) {
       formatCompareDurations(d, "current");
     });
+  }
+
+  resumeCurrentSong() async {
+    if (isTotakaPlaying){
+      totakaPlayer.stop();
+      totakaPlayer.release();
+      playNextTotaSong();
+    } else {
+      player.stop();
+      player.release();
+      playBackgroundMusic();
+      notifyListeners();
+    }
   }
 
   playBackgroundMusic() async {
@@ -283,7 +398,7 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
   waitingBalloonLaunch() async {
     // A method to wait some time before launching a balloon
 
-    CountdownTimer timer = CountdownTimer(Duration(hours: 24), Duration(seconds: 1));
+    CountdownTimer timer = CountdownTimer(const Duration(hours: 24), const Duration(seconds: 1));
     var listener = timer.listen(null);
 
     listener.onData((data) {
@@ -374,12 +489,6 @@ class ClockScreenModel extends BaseViewModel implements Initialisable, TickerPro
     npcName.add(currentBalloon.npcID);
     npcIndexes.add(balloonIndex);
     notifyListeners();
-  }
-
-  @override
-  Ticker createTicker(TickerCallback onTick) {
-    // TODO: implement createTicker
-    throw UnimplementedError();
   }
 
 }

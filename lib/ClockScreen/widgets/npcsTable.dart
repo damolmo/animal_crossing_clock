@@ -32,11 +32,12 @@ class NpcsTable extends StatelessWidget{
               width: width * 0.45,
               height: height * 0.25,
               margin: EdgeInsets.only(
-                right: width * 0.55,
+                top: viewModel.isTotakaPlaying ?  getDeviceHeight(context) * 0.025 : 0.0,
+                right: viewModel.isTotakaPlaying ?  width * 0.58 : width * 0.55,
               ),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("aldeano")].picture),
+                  image: AssetImage(viewModel.isTotakaPlaying ?  "assets/objects/chair.png" : viewModel.npcs[viewModel.npcsString.indexOf("aldeano")].picture),
                     fit: BoxFit.fitWidth
                 )
               ),
@@ -44,33 +45,40 @@ class NpcsTable extends StatelessWidget{
 
           // Totakeke
           if (viewModel.npcName.contains("totakeke"))
-            Container(
-              width: width * 0.4,
-              height: height * 0.25,
-              margin: EdgeInsets.only(
-                  left: width * 0.3,
-                  right: width * 0.3
-              ),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("totakeke")].picture),
-                      fit: BoxFit.fitWidth
-                  )
+            InkWell(
+              onTap: (){
+                viewModel.isTotakaMenu = true;
+                viewModel.notifyListeners();
+              },
+              child : Container(
+                width: width * 0.4,
+                height: height * 0.25,
+                margin: EdgeInsets.only(
+                    left: width * 0.3,
+                    right: width * 0.3
+                ),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("totakeke")].picture),
+                        fit: BoxFit.fitWidth
+                    )
+                ),
               ),
             ),
 
           // Canela
           if (viewModel.npcName.contains("canela"))
             Container(
-              width: width * 0.3,
+              width: viewModel.isTotakaPlaying ? width * 0.45 :  getDeviceWidth(context) * 0.4,
               height: height * 0.25,
               margin: EdgeInsets.only(
-                  left: width * 0.65,
+                top: viewModel.isTotakaPlaying ?  getDeviceHeight(context) * 0.025 : 0.0,
+                  left: viewModel.isTotakaPlaying ?  width *  0.55 : width * 0.65,
                   right: width * 0.05
               ),
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("canela")].picture),
+                      image: AssetImage(viewModel.isTotakaPlaying ?  "assets/objects/chair.png" : viewModel.npcs[viewModel.npcsString.indexOf("canela")].picture),
                       fit: BoxFit.fitWidth
                   )
               ),
@@ -88,7 +96,7 @@ class NpcsTable extends StatelessWidget{
               ),
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("tendo_nendo")].picture),
+                      image: AssetImage(viewModel.isTotakaPlaying ?  "assets/objects/chair.png" : viewModel.npcs[viewModel.npcsString.indexOf("tendo_nendo")].picture),
                     fit: BoxFit.fitWidth
                   )
               ),

@@ -19,34 +19,49 @@ class ClockScreenView extends StackedView<ClockScreenModel> implements TickerPro
       Widget? child
       ){
 
-    return Scaffold(
-      body : Stack(
-        children : [
+    return PopScope(
+      canPop: viewModel.isTotakaMenu ?  false : true,
+        onPopInvoked: (_){
+          viewModel.isTotakaMenu = false;
+          viewModel.notifyListeners();
+        },
+        child: Scaffold(
+          body : Stack(
+            children : [
 
-          // Background Theme
-          BackgroundTheme(viewModel: viewModel),
+              // Background Theme
+              BackgroundTheme(viewModel: viewModel),
 
-          // Path
-          PathWidget(viewModel: viewModel),
+              // Path
+              PathWidget(viewModel: viewModel),
 
-          // Tree
-          TreeWidget(viewModel: viewModel),
+              // Tree
+              TreeWidget(viewModel: viewModel),
 
-          // Clock
-          ClockWidget(viewModel: viewModel),
+              // Clock
+              ClockWidget(viewModel: viewModel),
 
-          // Balloon
-          if (viewModel.launchingBalloon)
-            BalloonWidget(viewModel: viewModel),
+              // Balloon
+              if (viewModel.launchingBalloon)
+                BalloonWidget(viewModel: viewModel),
 
-          // Unlocked Characters
-          NpcsTable(viewModel: viewModel),
+              // Unlocked Characters
+              NpcsTable(viewModel: viewModel),
 
-          // Device Warning
-          if (MediaQuery.of(context).size.width > 580 )
-          DeviceWarning(viewModel: viewModel),
-        ]
-      )
+              // Totakeke Dialog
+              if (viewModel.isTotakaPlaying)
+                CurrentSongDialog(viewModel: viewModel),
+
+              // Device Warning
+              if (MediaQuery.of(context).size.width > 580 )
+              DeviceWarning(viewModel: viewModel),
+
+              // Totaka Songs List
+              if (viewModel.isTotakaMenu)
+                TotakaSongsList(viewModel: viewModel),
+            ]
+          )
+        ),
     );
   }
 
