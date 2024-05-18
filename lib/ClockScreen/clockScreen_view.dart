@@ -55,10 +55,6 @@ class ClockScreenView extends StackedView<ClockScreenModel> implements TickerPro
               // Web Audio
               WebVolumeButton(viewModel: viewModel),
 
-              // Device Warning
-              if (MediaQuery.of(context).size.width > 580 )
-              DeviceWarning(viewModel: viewModel),
-
               // Totaka Songs List
               if (viewModel.isTotakaMenu)
                 TotakaSongsList(viewModel: viewModel),

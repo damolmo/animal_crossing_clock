@@ -18,8 +18,8 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   int currentDay = 0;
   int currentYear = 0;
   String currentWeekDay = "";
-  Times currentTime =  Times(hour: "hour", sound: "sound", sky: "sky");
-  Stations currentStation = Stations(name: "name", path: "path", tree: "tree");
+  Times currentTime =  Times(hour: "", sound: "", sky: "");
+  Stations currentStation = Stations(name: "Winter", path: "assets/paths/winter.png", tree: "assets/trees/winter_tree.png");
   DayMonthYearStation dayMonthYearStation = DayMonthYearStation(day: "day", month: "month", year: "year", station: "station");
   AudioPlayer player = AudioPlayer();
   AudioPlayer balloonPlayer = AudioPlayer();
@@ -53,23 +53,35 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
   int choosedSongIndex = 999;
   int positionCounter = 0;
   String savedPosition =  "";
+  bool isWebListenerEnabled = false;
 
   // Values used for disc rotation
 
   @override
   void initialise() async  {
-    await getDeviceTimeStamp(); // Background
-    await retrieveTimeData();
-    await retrieveExistingStations();
-    await playBackgroundMusic();
-    await enableListeners();
-    await enableTotakaListeners();
-    await waitingBalloonLaunch();
-    await getTotakaSongs();
-    await playBackProtection();
-
-    kIsWeb? isMusicPlaying = false : isMusicPlaying = true;
-    notifyListeners();
+    if (kIsWeb){
+      getDeviceTimeStamp(); // Background
+      retrieveTimeData();
+      retrieveExistingStations();
+      playBackgroundMusic();
+      await enableListeners();
+      enableTotakaListeners();
+      waitingBalloonLaunch();
+      getTotakaSongs();
+      isMusicPlaying = false;
+      notifyListeners();
+    } else {
+      await getDeviceTimeStamp(); // Background
+      await retrieveTimeData();
+      await retrieveExistingStations();
+      await playBackgroundMusic();
+      await enableListeners();
+      await enableTotakaListeners();
+      await waitingBalloonLaunch();
+      await getTotakaSongs();
+      isMusicPlaying = true;
+      notifyListeners();
+    }
   }
 
   getTotakaSongs() async {
@@ -94,32 +106,6 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     } else {
       playBackgroundMusic();
     }
-  }
-
-  playBackProtection() async {
-    // A method that ensures playback is always present
-    CountdownTimer timer = CountdownTimer(const Duration(hours: 24), const Duration(seconds: 1));
-    var listener = timer.listen(null);
-
-    listener.onData((data){
-        if (currentDuration == totalDuration ) {
-          positionCounter += 1;
-          notifyListeners();
-        }
-
-          if(positionCounter >= 5){
-          // No duration change in 5 seconds
-          // Refresh
-          player.stop();
-          player.release();
-          playBackgroundMusic();
-          positionCounter = 0;
-          notifyListeners();
-        }
-
-    });
-
-
   }
 
   playChoosedTotakaSong(bool isGonnaPlay) async {
@@ -302,11 +288,6 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     } else {
       currentDuration = "$minutes:$seconds";
       notifyListeners();
-
-      if (currentDuration == totalDuration){
-        // Start playing again, notify listeners
-        resumeCurrentSong();
-      }
     }
 
   }
@@ -333,6 +314,11 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
     totakaPlayer.onPositionChanged.listen((Duration d) {
       formatCompareDurations(d, "current");
     });
+
+    totakaPlayer.onPlayerComplete.listen((onData){
+      resumeCurrentSong();
+    });
+
   }
 
   enableListeners() async {
@@ -344,6 +330,10 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
 
     player.onPositionChanged.listen((Duration d) {
       formatCompareDurations(d, "current");
+    });
+
+    player.onPlayerComplete.listen((onData){
+      resumeCurrentSong();
     });
   }
 
@@ -415,8 +405,8 @@ class ClockScreenModel extends BaseViewModel implements Initialisable{
       isMusicPlaying = true;
       notifyListeners();
       playBackgroundMusic();
+      }
     }
-  }
 
   waitingBalloonLaunch() async {
     // A method to wait some time before launching a balloon

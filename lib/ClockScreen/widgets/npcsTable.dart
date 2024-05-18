@@ -38,7 +38,7 @@ class NpcsTable extends StatelessWidget{
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(viewModel.isTotakaPlaying ?  "assets/objects/chair.png" : viewModel.npcs[viewModel.npcsString.indexOf("aldeano")].picture),
-                    fit: BoxFit.fitWidth
+                    fit: getDeviceWidth(context) < 580 ?  BoxFit.fitWidth : BoxFit.fitHeight
                 )
               ),
             ),
@@ -60,7 +60,7 @@ class NpcsTable extends StatelessWidget{
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         image: AssetImage(viewModel.npcs[viewModel.npcsString.indexOf("totakeke")].picture),
-                        fit: BoxFit.fitWidth
+                        fit: getDeviceWidth(context) < 580 ?  BoxFit.fitWidth : BoxFit.fitHeight
                     )
                 ),
               ),
@@ -79,7 +79,7 @@ class NpcsTable extends StatelessWidget{
               decoration: BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage(viewModel.isTotakaPlaying ?  "assets/objects/chair.png" : viewModel.npcs[viewModel.npcsString.indexOf("canela")].picture),
-                      fit: BoxFit.fitWidth
+                      fit: getDeviceWidth(context) < 580 ?  BoxFit.fitWidth : BoxFit.fitHeight
                   )
               ),
             ),
@@ -97,7 +97,7 @@ class NpcsTable extends StatelessWidget{
               decoration: BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage(viewModel.isTotakaPlaying ?  "assets/objects/chair.png" : viewModel.npcs[viewModel.npcsString.indexOf("tendo_nendo")].picture),
-                    fit: BoxFit.fitWidth
+                    fit: getDeviceWidth(context) < 580 ?  BoxFit.fitWidth : BoxFit.fitHeight
                   )
               ),
             )

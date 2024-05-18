@@ -60,7 +60,7 @@ class BackgroundThemeState extends State<BackgroundTheme> with TickerProviderSta
 
     return OverflowBox(
       maxWidth: MediaQuery.of(context).size.width *  4.0,
-      maxHeight: MediaQuery.of(context).size.height * 4.0 ,
+      maxHeight:MediaQuery.of(context).size.height * 4.0 ,
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [

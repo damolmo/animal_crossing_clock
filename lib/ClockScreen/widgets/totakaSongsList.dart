@@ -13,11 +13,11 @@ class TotakaSongsList extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Container(
-      width: getDeviceWidth(context) *  0.95,
+      width: getDeviceWidth(context) > 580 ?  getDeviceWidth(context) *  0.45 : getDeviceWidth(context) *  0.95,
       height: getDeviceHeight(context) * 0.95,
       margin: EdgeInsets.only(
-        left: getDeviceWidth(context) *  0.025,
-        right: getDeviceWidth(context) * 0.025,
+        left: getDeviceWidth(context) > 580 ?  getDeviceWidth(context) *  0.275 :  getDeviceWidth(context) *  0.025,
+        right: getDeviceWidth(context) > 580 ?  getDeviceWidth(context) *  0.275 :  getDeviceWidth(context) * 0.025,
         top: getDeviceHeight(context) *  0.025,
         bottom: getDeviceHeight(context) * 0.025
       ),
@@ -30,7 +30,7 @@ class TotakaSongsList extends StatelessWidget{
           itemCount: viewModel.songs.length,
           itemBuilder: (context, index){
             return Container(
-              width: getDeviceWidth(context) * 0.9,
+              width: getDeviceWidth(context) > 580 ?  getDeviceWidth(context) *  0.4 :  getDeviceWidth(context) * 0.9,
               height: getDeviceHeight(context) *  0.1,
               margin: EdgeInsets.only(
                 left: getDeviceWidth(context) * 0.025,
@@ -44,8 +44,8 @@ class TotakaSongsList extends StatelessWidget{
                 boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.6), blurStyle: BlurStyle.normal, blurRadius: 6.0, spreadRadius: 3.0)]
               ),
               child: ListTile(
-                leading: Container(width : getDeviceWidth(context) * 0.15, height: getDeviceHeight(context) *  0.1, decoration : BoxDecoration(borderRadius: BorderRadius.circular(360), image: DecorationImage(image: AssetImage(viewModel.songs[index].songBoxart)))),
-                title: Text(viewModel.songs[index].songName, style: TextStyle(color: viewModel.choosedSongIndex == index && viewModel.isTotakaPlaying ? Colors.black :  Colors.white, fontSize: getDeviceWidth(context) * 0.05, fontWeight: FontWeight.bold),),
+                leading: Container(width : getDeviceWidth(context) > 580 ?  getDeviceWidth(context) *  0.07 :  getDeviceWidth(context) * 0.15, height: getDeviceWidth(context) > 580 ?  getDeviceHeight(context) *  0.05 :  getDeviceHeight(context) *  0.1, decoration : BoxDecoration(borderRadius: BorderRadius.circular(360), image: DecorationImage(image: AssetImage(viewModel.songs[index].songBoxart)))),
+                title: Text(viewModel.songs[index].songName, style: TextStyle(color: viewModel.choosedSongIndex == index && viewModel.isTotakaPlaying ? Colors.black :  Colors.white, fontSize: getDeviceWidth(context) > 580 ?  getDeviceWidth(context) *  0.03 :  getDeviceWidth(context) * 0.05, fontWeight: FontWeight.bold),),
                 subtitle: Text(viewModel.choosedSongIndex == index && viewModel.isTotakaPlaying ? "${viewModel.currentDuration}/${viewModel.totalDuration}" : "", style: TextStyle(color: viewModel.choosedSongIndex == index ? Colors.black : Colors.white, fontSize: getDeviceWidth(context) * 0.04 ),),
                 trailing: IconButton(
                   onPressed : (){

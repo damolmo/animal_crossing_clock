@@ -38,7 +38,7 @@ class ClockWidget extends StatelessWidget{
             width: width * 0.35,
             height: width > 800 ? height * 0.07 : height * 0.05,
             margin: EdgeInsets.only(top: height * 0.08, bottom: height * 0.01, left: width > 800 ? width * 0.218 :  width * 0.13, right: width * 0.05 ),
-            child: Text("${viewModel.additionalZeroHour}${viewModel.currentHour}:${viewModel.additionalZeroMinute}${viewModel.currentMinutes}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 22 : 35),),
+            child: Text("${viewModel.additionalZeroHour}${viewModel.currentHour}:${viewModel.additionalZeroMinute}${viewModel.currentMinutes}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 30 : 35),),
           ),
 
           // Day and Month
@@ -47,16 +47,16 @@ class ClockWidget extends StatelessWidget{
             height: height * 0.05,
             margin: EdgeInsets.only(top: width > 800 ? height * 0.015 : height * 0.017, bottom: height * 0.01, left: width > 800 ? width * 0.195 : width * 0.059, right: width * 0.15 ),
             child: viewModel.currentMonth < 10 ?
-              Text("${viewModel.additionalZeroDay}${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 18 : 30),) :
-              Text("${viewModel.additionalZeroDay}${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 15 : 25),),
+              Text("${viewModel.additionalZeroDay}${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 25 : 30),) :
+              Text("${viewModel.additionalZeroDay}${viewModel.currentDay}  ${viewModel.currentMonth}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:  width > 800 ? 20 : 25),),
           ),
 
           // Week Day
           Container(
             width: width * 0.1,
             height: width > 800 ? height * 0.05 : height * 0.03,
-            margin: EdgeInsets.only(top: height * 0.03, bottom: height * 0.07, left: width > 800 ? width * 0.27 : width * 0.335, right: width * 0.02),
-            child: Text(viewModel.currentWeekDay, style: TextStyle(color: Colors.black, fontSize: width > 800 ? 15 :  20, fontWeight: FontWeight.bold),),
+            margin: EdgeInsets.only(top: height * 0.03, bottom: height * 0.07, left: width > 800 ? width * 0.275 : width * 0.335, right: width * 0.02),
+            child: Text(viewModel.currentWeekDay, style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
           ),
 
         ],
